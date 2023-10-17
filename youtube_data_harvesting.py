@@ -310,7 +310,7 @@ def mongodb(database,channel_data,channel_name,data_extraction):
              col1.insert_one(data_youtube)
              st.write(data_youtube)
 
-             st.success("The data has been successfully stored in the MongoDB database",icon="🚨🚨🚨")
+             st.success("The data has been successfully stored in the MongoDB database",icon="🚨")
              st.balloons()
 
 
@@ -725,7 +725,7 @@ def sql(database,col_input):
     connection.commit()
     print(cursor.rowcount, "records inserted successfully")
 
-    st.success("Migrated Data Successfully to SQL Data Warehouse",icon="🎉🎉🎉")
+    st.success("Migrated Data Successfully to SQL Data Warehouse",icon="🎉")
     st.balloons()
     connection.close()
 
