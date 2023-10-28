@@ -377,7 +377,7 @@ def sql_create_tables():
 
 
     cursor.execute("""CREATE TABLE IF NOT EXISTS comment(
-                                        comment_id				VARCHAR(255) PRIMARY KEY, 
+                                        comment_id				VARCHAR(255), 
                                         comment_text			TEXT,
                                         comment_author			VARCHAR(255),
                                         comment_published_date	DATE,
@@ -743,7 +743,6 @@ def query1():
     cursor.execute('SELECT video.video_name, channel.channel_title\
                     FROM  video\
                     INNER JOIN  channel ON video.channel_id = channel.channel_id\
-                    GROUP BY video.video_id, channel.channel_id\
                     ORDER BY channel.channel_title ASC')
 
 
@@ -768,8 +767,8 @@ def query2():
     cursor.execute("select distinct channel.channel_title, count(distinct video.video_id) as total\
                     FROM video\
                     INNER JOIN  channel ON channel.channel_id = video.channel_id\
-                    GROUP BY channel.channel_id\
-                    ORDER BY total DESC")
+                    GROUP BY channel.channel_title,channel.channel_id\
+                    ORDER BY total DESC"))
     s = cursor.fetchall()
     i = [i for i in range(1, len(s) + 1)]
     pd.set_option('display.max_columns', None)
@@ -786,11 +785,10 @@ def query3():
         database="youtube_project_data"
     )
     cursor = connection.cursor()
-    cursor.execute("SELECT v.video_name, vs.view_count, c.channel_title \
+    cursor.execute("SELECT distinct v.video_name, vs.view_count, c.channel_title \
                     FROM video AS v \
                     INNER JOIN video_stat AS vs ON v.video_id = vs.video_id \
                     INNER JOIN channel AS c ON v.channel_id = c.channel_id \
-                    GROUP BY v.video_id, c.channel_title \
                     ORDER BY vs.view_count DESC \
                     LIMIT 10")
     s = cursor.fetchall()
@@ -810,11 +808,10 @@ def query4():
         database="youtube_project_data"
     )
     cursor = connection.cursor()
-    cursor.execute("SELECT v.video_name, vs.comment_count, c.channel_title \
+    cursor.execute("SELECT distinct v.video_name, vs.comment_count, c.channel_title \
                     FROM video AS v \
                     INNER JOIN video_stat AS vs ON v.video_id = vs.video_id \
                     INNER JOIN channel AS c ON v.channel_id = c.channel_id \
-                    GROUP BY v.video_id, c.channel_title \
                     ORDER BY vs.comment_count DESC \
                     LIMIT 10")
     s = cursor.fetchall()
@@ -855,7 +852,7 @@ def query6():
         database="youtube_project_data"
     )
     cursor = connection.cursor()
-    cursor.execute("SELECT v.video_name, vs.like_count, c.channel_title \
+    cursor.execute("SELECT distinct v.video_name, vs.like_count, c.channel_title \
                     FROM video AS v \
                     INNER JOIN video_stat AS vs ON v.video_id = vs.video_id \
                     INNER JOIN channel AS c ON v.channel_id = c.channel_id \
@@ -900,7 +897,6 @@ def query8(year):
          FROM video\
          INNER JOIN channel on channel.channel_id = video.channel_id\
          WHERE extract(year FROM video.published_date) = \'' + str(year) + '\'\
-         GROUP BY channel.channel_id\
          ORDER BY total DESC')
     s = cursor.fetchall()
     i = [i for i in range(1, len(s) + 1)]
@@ -921,7 +917,6 @@ def query9():
                    FROM video_stat AS vs \
                    INNER JOIN  video AS v ON v.video_id = vs.video_id\
                    INNER JOIN  channel ON channel.channel_id = v.channel_id\
-                   GROUP BY channel.channel_id\
                    ORDER BY  average DESC;")
 
 
@@ -944,7 +939,6 @@ def query10():
                      FROM video AS v\
                      INNER JOIN video_stat AS vs ON v.video_id = vs.video_id \
                      INNER JOIN channel ON channel.channel_id = v.channel_id\
-                     GROUP BY v.video_id, channel.channel_title\
                      ORDER BY vs.comment_count DESC\
                      LIMIT 1')
     s = cursor.fetchall()
@@ -1113,7 +1107,7 @@ def main():
         col17, col18 = st.columns([1, 2])
 
         with col18:
-            fig = px.bar(data9_sorted, x='Average Video Duration', y='Channel Names', template='seaborn')
+            fig = px.bar(data9_sorted, x='Channel Names', y='Average Video Duration', template='seaborn')
             fig.update_traces(text=data9_sorted['Average Video Duration'], textposition='outside')
             colors_set1 = px.colors.qualitative.Set1
             fig.update_traces(marker=dict(color=colors_set1[:len(data9_sorted)]))
