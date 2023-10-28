@@ -897,6 +897,7 @@ def query8(year):
          FROM video\
          INNER JOIN channel on channel.channel_id = video.channel_id\
          WHERE extract(year FROM video.published_date) = \'' + str(year) + '\'\
+         GROUP BY channel.channel_title\
          ORDER BY total DESC')
     s = cursor.fetchall()
     i = [i for i in range(1, len(s) + 1)]
@@ -917,6 +918,7 @@ def query9():
                    FROM video_stat AS vs \
                    INNER JOIN  video AS v ON v.video_id = vs.video_id\
                    INNER JOIN  channel ON channel.channel_id = v.channel_id\
+                   GROUP BY channel.channel_title\
                    ORDER BY  average DESC;")
 
 
