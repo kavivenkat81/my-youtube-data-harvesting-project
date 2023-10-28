@@ -359,7 +359,7 @@ def sql_create_tables():
                                                           channel_id		VARCHAR(255))""")
 
     cursor.execute("""CREATE TABLE IF NOT EXISTS video(
-                                        video_id			VARCHAR(255) PRIMARY KEY,
+                                        video_id			VARCHAR(255),
                                         video_name			VARCHAR(255),
                                         video_description	TEXT,
                                         published_date		DATE,
@@ -368,7 +368,7 @@ def sql_create_tables():
                                         channel_id          VARCHAR(255))""")
 
     cursor.execute("""CREATE TABLE IF NOT EXISTS video_stat(
-                                            video_id			VARCHAR(255) PRIMARY KEY,    
+                                            video_id			VARCHAR(255),    
                                             view_count			INT,
                                             like_count			INT,
                                             comment_count		INT,
@@ -893,7 +893,7 @@ def query8(year):
         database="youtube_project_data"
     )
     cursor = connection.cursor()
-    cursor.execute('SELECT distinct channel.channel_title, count(distinct video.video_id) AS total\
+    cursor.execute('SELECT channel.channel_title, count(video.video_id) AS total\
          FROM video\
          INNER JOIN channel on channel.channel_id = video.channel_id\
          WHERE extract(year FROM video.published_date) = \'' + str(year) + '\'\
