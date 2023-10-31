@@ -614,13 +614,11 @@ def sql_comments(database, option_sql):
                           # Check if the video_data is a dictionary (contains video details)
                           if isinstance(video_data, dict) and "overall_comments" in video_data:
                               comments_data = video_data["overall_comments"]
-                              print("comments_data", comments_data)
-                              print("type(comments_data)",type(comments_data))
+                              
 
                               for comment_data in comments_data:
                                   if isinstance(comment_data, dict) and "comments" in comment_data:
                                       comment_details = comment_data["comments"]
-                                      print("hai",type(comment_details))
                                       comment_id = comment_details.get("comment_id", "")
                                       comment_text = comment_details.get("comment_text", "")
                                       comment_author = comment_details.get("comment_author", "")
